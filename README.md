@@ -4,7 +4,7 @@ A high-performance Network File System (NFS) server implementation written in Ru
 
 ## 🚀 Features
 
-- **NFSv3 Protocol Support** - Full implementation of NFSv3 specification
+- **NFSv4 Protocol Support** - Full implementation of NFSv4 specification
 - **High Performance** - Built with Rust's zero-cost abstractions and memory safety
 - **Cross-Platform** - Runs on Linux, macOS, and Windows
 - **Async I/O** - Non-blocking operations using Tokio runtime
@@ -24,7 +24,12 @@ A high-performance Network File System (NFS) server implementation written in Ru
 ```bash
 git clone https://github.com/nfs-rs/nfs-rs.git
 cd nfs-rs
+
+# Build
 cargo build --release
+
+# Run with logs
+RUST_LOG=info NFS_BIND_ADDR=127.0.0.1 NFS_PORT=20490 cargo run --bin nfs-rs
 ```
 
 ### From Crates.io
@@ -33,68 +38,35 @@ cargo build --release
 cargo install nfs-rs
 ```
 
-## 🚦 Quick Start
 
-1. **Create a configuration file:**
-
-```toml
-# nfs-config.toml
-[server]
-bind_address = "0.0.0.0:2049"
-export_path = "/path/to/export"
-uid_map = "root:0"
-gid_map = "root:0"
-
-[logging]
-level = "info"
-```
-
-2. **Run the server:**
+## 📦 Usage
 
 ```bash
-sudo ./target/release/nfs-rs --config nfs-config.toml
+nfs-rs: Minimal NFSv4.2 server in Rust
+
+Usage:
+	cargo run --bin nfs-rs [--help]
+
+Environment variables:
+	NFS_BIND_ADDR   Bind address (default: 127.0.0.1)
+	NFS_PORT        Port to listen on (default: 20490)
+
+Example:
+	RUST_LOG=info NFS_BIND_ADDR=127.0.0.1 NFS_PORT=20490 cargo run --bin nfs-rs
 ```
 
-3. **Mount from client:**
+## 🚦 Quick Start
+
+1. **Run the server:**
+
+```bash
+sudo ./target/release/nfs-rs
+```
+
+2. **Mount from client:**
 
 ```bash
 sudo mount -t nfs <server-ip>:/path/to/export /mnt/nfs
-```
-
-## 📖 Configuration
-
-### Server Options
-
-| Option | Description | Default |
-|--------|-------------|---------|
-| `bind_address` | Server bind address and port | `0.0.0.0:2049` |
-| `export_path` | Directory to export | Required |
-| `read_only` | Mount as read-only | `false` |
-| `uid_map` | User ID mapping | `nobody:65534` |
-| `gid_map` | Group ID mapping | `nobody:65534` |
-
-### Example Configuration
-
-```toml
-[server]
-bind_address = "0.0.0.0:2049"
-export_path = "/srv/nfs"
-read_only = false
-max_clients = 100
-
-[security]
-uid_map = "root:0,user:1000"
-gid_map = "root:0,users:1000"
-allowed_networks = ["192.168.1.0/24", "10.0.0.0/8"]
-
-[performance]
-read_buffer_size = 65536
-write_buffer_size = 65536
-max_concurrent_requests = 1000
-
-[logging]
-level = "info"
-file = "/var/log/nfs-rs.log"
 ```
 
 ## 🏗️ Architecture
@@ -135,7 +107,7 @@ Benchmark results on modern hardware:
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions!
 
 ### Development Setup
 
@@ -150,7 +122,7 @@ cargo test
 
 - Run `cargo fmt` before committing
 - Run `cargo clippy` to catch common mistakes
-- Ensure all tests pass with `cargo test`
+- Run `cargo test` to ensure all tests pass
 
 ## 📄 License
 
@@ -175,15 +147,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Issues**: [GitHub Issues](https://github.com/nfs-rs/nfs-rs/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/nfs-rs/nfs-rs/discussions)
 - **Documentation**: [docs.rs](https://docs.rs/nfs-rs)
-
-## 🗺️ Roadmap
-
-- [ ] NFSv4 protocol support
-- [ ] Kerberos authentication
-- [ ] Docker container support
-- [ ] Web-based management interface
-- [ ] Clustering support
-- [ ] Performance monitoring dashboard
 
 ---
 

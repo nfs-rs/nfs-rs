@@ -1,0 +1,67 @@
+[package]
+name = "nfs-rs"
+version = "0.1.0"
+edition = "2021"
+authors = ["Your Name <your.email@example.com>"]
+description = "A high-performance NFSv4.2 server implementation in Rust"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/nfs-rs/nfs-rs"
+keywords = ["nfs", "server", "networking", "filesystem"]
+categories = ["network-programming", "filesystem"]
+
+[dependencies]
+# Async runtime
+tokio = { version = "1.0", features = ["full"] }
+futures = "0.3"
+
+# Serialization/Deserialization
+serde = { version = "1.0", features = ["derive"] }
+serde_bytes = "0.11"
+serde_json = "1.0"
+
+# Networking
+socket2 = "0.5"
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Utilities
+uuid = { version = "1.0", features = ["v4", "serde"] }
+bytes = "1.0"
+bitflags = "2.0"
+byteorder = "1.0"
+
+# Time handling
+chrono = { version = "0.4", features = ["serde"] }
+
+# Async traits
+async-trait = "0.1"
+
+# XDR encoding/decoding (similar to what nfsserve uses)
+num-derive = "0.4"
+num-traits = "0.2"
+
+# File system operations
+libc = "0.2"
+
+[dev-dependencies]
+tempfile = "3.0"
+tokio-test = "0.4"
+
+[features]
+default = ["server"]
+server = []
+client = []
+
+[[bin]]
+name = "nfs-rs"
+path = "src/bin/server.rs"
+
+[[example]]
+name = "simple_server"
+path = "examples/simple_server.rs"
