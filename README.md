@@ -141,6 +141,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [RFC 1057 Appendix A](https://datatracker.ietf.org/doc/html/rfc1057#appendix-A) - RPC PortMapper
 - [Tokio](https://tokio.rs/) - Async runtime for Rust
 - [Serde](https://serde.rs/) - Serialization framework
+- [NFS Config](https://gist.github.com/craftslab/ee8993e8b8d4484a74b0d0d396c21cc6) - NFS config on CentOS under WSL2
+- [CentOS Settings](https://gist.github.com/craftslab/69ddaa0c16f49d901e2ba534791d156f) - CentOS settings under WSL2
 
 ## 📞 Support
 
