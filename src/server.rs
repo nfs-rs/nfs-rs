@@ -133,6 +133,33 @@ async fn handle_conn(sock: &mut tokio::net::TcpStream, vfs: Arc<dyn Vfs>) -> Nfs
                             res_count += 1;
                         }
                     }
+                    x if x == NfsOp4::OpCreate as u32 => {
+                        // Minimal: create file with path from opdata, size 0
+                        let path = String::from_utf8_lossy(&op.opdata).to_string();
+                        let _ = vfs.create_file(&path, 0).await;
+                        write_resop(&mut comp_res, NfsOp4::OpCreate as u32, NFS4_OK, &[])?;
+                        res_count += 1;
+                    }
+                    x if x == NfsOp4::OpRemove as u32 => {
+                        let path = String::from_utf8_lossy(&op.opdata).to_string();
+                        let _ = vfs.remove_entry(&path).await;
+                        write_resop(&mut comp_res, NfsOp4::OpRemove as u32, NFS4_OK, &[])?;
+                        res_count += 1;
+                    }
+                    x if x == NfsOp4::OpWrite as u32 => {
+                        let path = String::from_utf8_lossy(&op.opdata).to_string();
+                        let _ = vfs.modify_file(&path, 0).await;
+                        write_resop(&mut comp_res, NfsOp4::OpWrite as u32, NFS4_OK, &[])?;
+                        res_count += 1;
+                    }
+                    x if x == NfsOp4::OpRename as u32 => {
+                        // For demo: remove old, create new
+                        let path = String::from_utf8_lossy(&op.opdata).to_string();
+                        let _ = vfs.remove_entry(&path).await;
+                        let _ = vfs.create_file(&format!("{}_renamed", path), 0).await;
+                        write_resop(&mut comp_res, NfsOp4::OpRename as u32, NFS4_OK, &[])?;
+                        res_count += 1;
+                    }
                     _ => {
                         let sts = 10004u32; // NFS4ERR_NOTSUPP
                         overall_status = sts;

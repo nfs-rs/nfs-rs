@@ -21,3 +21,44 @@ async fn test_vfs_getattr_bitmap_respected() {
     assert_eq!(words, bm.len());
     assert_eq!(got, bm);
 }
+
+#[tokio::test]
+async fn test_vfs_create_and_modify_file() {
+    let vfs = MemVfs::new();
+    let path = "/testfile";
+    vfs.create_file(path, 123).await.unwrap();
+    vfs.modify_file(path, 456).await.unwrap();
+    let attrs = vfs.get_attr(path).unwrap();
+    assert_eq!(attrs.size, 456);
+}
+
+#[tokio::test]
+async fn test_vfs_create_and_remove_dir() {
+    let vfs = MemVfs::new();
+    let path = "/testdir";
+    vfs.create_dir(path).await.unwrap();
+    assert!(vfs.get_attr(path).is_some());
+    vfs.remove_entry(path).await.unwrap();
+    assert!(vfs.get_attr(path).is_none());
+}
+
+#[tokio::test]
+async fn test_vfs_concurrent_updates() {
+    use std::sync::Arc;
+    use tokio::task;
+    let vfs = MemVfs::new();
+    let path = "/concurrent";
+    let vfs = Arc::new(vfs);
+    let mut handles = vec![];
+    for i in 0..10 {
+        let vfs = vfs.clone();
+        let path = path.to_string();
+        handles.push(task::spawn(async move {
+            vfs.create_file(&path, i).await.unwrap();
+        }));
+    }
+    for h in handles { h.await.unwrap(); }
+    let attrs = vfs.get_attr(path).unwrap();
+    // Last update wins
+    assert_eq!(attrs.size, 9);
+}
