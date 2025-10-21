@@ -163,14 +163,4 @@ impl Vfs for MemVfs {
         self.remove_attr(path);
         Ok(())
     }
-
-    // --- Performance tips for users ---
-    // 1. For best performance, use a persistent backend (not just in-memory) for large trees.
-    // 2. If your workflow allows, mount with actimeo=1 or higher to enable some attribute caching.
-    // 3. For Android builds, actimeo=0 is safest but slowest; try actimeo=1 for a speed/consistency tradeoff.
-    // 4. Use DashMap for concurrent access to attributes, reducing lock contention.
-    // 5. Batch/coalesce updates to avoid unnecessary attribute changes.
-    // 6. Profile with `perf` or similar to find further bottlenecks.
-    // 7. Consider using a real filesystem backend for production workloads.
-    // 8. For advanced users: implement smarter client-side attribute caching with custom NFS mount options.
 }

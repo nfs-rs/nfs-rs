@@ -105,6 +105,34 @@ Benchmark results on modern hardware:
 - **Random Write (4K)**: ~30,000 IOPS
 - **Concurrent Clients**: Up to 1000+ connections
 
+### Performance Optimization Tips
+
+1. **Persistent Backend**: For best performance with large file trees, use a persistent backend (not just in-memory).
+
+2. **Attribute Caching**: If your workflow allows, mount with `actimeo=1` or higher to enable some attribute caching:
+   ```bash
+   sudo mount -o actimeo=1 -t nfs <server>:/path /mnt/nfs
+   ```
+
+3. **Android Builds**: For Android builds, `actimeo=0` is safest but slowest. Try `actimeo=1` for a speed/consistency tradeoff:
+   ```bash
+   sudo mount -o actimeo=0 -t nfs <server>:/path /mnt/nfs
+   ```
+
+4. **Concurrent Access**: nfs-rs uses `DashMap` for concurrent access to file attributes, reducing lock contention.
+
+5. **Update Coalescing**: The VFS implementation batches and coalesces attribute updates to avoid unnecessary changes.
+
+6. **Profiling**: Profile with `perf` or similar tools to find further bottlenecks:
+   ```bash
+   perf record -g ./target/release/nfs-rs
+   perf report
+   ```
+
+7. **Production Workloads**: Consider using a real filesystem backend (not in-memory) for production workloads.
+
+8. **Advanced Caching**: For advanced users, implement smarter client-side attribute caching with custom NFS mount options like `ac`, `acregmin`, `acregmax`, `acdirmin`, `acdirmax`.
+
 ## 🤝 Contributing
 
 We welcome contributions!
